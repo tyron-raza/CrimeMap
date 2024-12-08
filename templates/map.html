@@ -1,0 +1,28 @@
+<h2>Crime Map</h2>
+<div id="map" style="height: 600px;"></div>
+
+<script>
+    // Initialize Map
+    var map = L.map('map').setView([23.8103, 90.4125], 12); // Default to Dhaka, Bangladesh
+
+    // Add OpenStreetMap Layer
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
+
+    // Fetch Crime Data
+    fetch('/api/crimes')
+        .then(response => response.json())
+        .then(data => {
+            data.forEach(crime => {
+                L.marker([crime.latitude, crime.longitude])
+                    .addTo(map)
+                    .bindPopup(`
+                        <strong>${crime.title}</strong><br>
+                        <em>${crime.crime_type}</em><br>
+                        ${crime.description}<br>
+                        <small>${crime.date_time}</small>
+                    `);
+            });
+        });
+</script>

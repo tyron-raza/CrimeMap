@@ -1,0 +1,52 @@
+<form method="POST" enctype="multipart/form-data">
+    <label>Crime Title:</label>
+    <input type="text" name="title" required>
+
+    <label>Description:</label>
+    <textarea name="description" required></textarea>
+
+    <label>Date & Time:</label>
+    <input type="datetime-local" name="date_time" required>
+
+    <label>Location:</label>
+    <input type="text" name="location" required>
+
+    <label>Crime Type:</label>
+    <select name="crime_type" required>
+        <option value="Theft">Theft</option>
+        <option value="Assault">Assault</option>
+        <option value="Vandalism">Vandalism</option>
+    </select>
+
+    <label>Media Upload (optional):</label>
+    <input type="file" name="media_file">
+
+    <button type="submit">Submit Report</button>
+</form>
+
+
+
+
+<h2>Report a Crime</h2>
+<form method="POST" class="form-container">
+    <label for="title">Crime Title:</label>
+    <input type="text" id="title" name="title" required>
+
+    <label for="description">Description:</label>
+    <textarea id="description" name="description" rows="5" required></textarea>
+
+    <label for="location">Location:</label>
+    <input type="text" id="location" name="location" required>
+
+    <label for="crime_type">Type of Crime:</label>
+    <select id="crime_type" name="crime_type" required>
+        <option value="Theft">Theft</option>
+        <option value="Assault">Assault</option>
+        <option value="Vandalism">Vandalism</option>
+        <option value="Fraud">Fraud</option>
+        <option value="Other">Other</option>
+    </select>
+
+    <button type="submit" class="btn">Submit Report</button>
+</form>
+
