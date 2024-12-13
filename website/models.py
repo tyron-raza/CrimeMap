@@ -19,3 +19,6 @@ class User(db.Model, UserMixin):
     first_name = db.Column(db.String(150))
     crimes = db.relationship('Crime')
 
+
+    
+    

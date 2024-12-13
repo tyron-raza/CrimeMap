@@ -38,6 +38,9 @@
         <div class="navbar-nav">
           {% if user.is_authenticated %}
           <a class="nav-item nav-link" id="home" href="/">Home</a>
+          {% if user.id == 1 %}
+          <a class="nav-item nav-link" id="admin-tools" href="/admin-tools">Admin Tools</a>
+          {% endif %}
           <a class="nav-item nav-link" id="logout" href="/logout">Logout</a>
           {% else %}
           <a class="nav-item nav-link" id="login" href="/login">Login</a>
