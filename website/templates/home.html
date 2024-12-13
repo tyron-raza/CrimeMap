@@ -1,0 +1,39 @@
+{% extends "base.html" %} {% block title %}Home{% endblock %} {% block content
+%}
+<div style="text-align: center;"> 
+  <h1>Crimes</h1>
+</div>
+
+<ul class="list-group">
+  {% for crime in crimes %}
+    <li class="list-group-item">
+      <strong>Title:</strong> {{ crime.title }} <br>
+      <strong>Location:</strong> {{ crime.location }} <br>
+      <strong>Description:</strong> {{ crime.data }} <br>
+      <strong>Date:</strong> {{ crime.date.strftime('%Y-%m-%d %H:%M:%S') }}<br>
+      <strong>Posted by:</strong> {{crime.user.first_name}}
+      
+      <button type="button" class="close" onClick="deleteCrime({crime})">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </li>
+  {% endfor %}
+</ul>
+
+<form method="POST">
+  <label for="title">Title</label>
+  <textarea name="Title" id="title" class="form-control" required></textarea>
+
+  <label for="data">Description</label>
+  <textarea name="Description" id="data" class="form-control" required></textarea>
+
+  <label for="location">Location</label>
+  <textarea name="Location" id="location" class="form-control" required></textarea>
+
+  <br />
+  <div style="text-align: center;">
+    <button type="submit" class="btn btn-primary">Report a Crime</button>
+  </div>
+</form>
+
+{% endblock %}
