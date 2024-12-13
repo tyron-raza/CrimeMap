@@ -1,9 +1,4 @@
-<<<<<<< HEAD
-flask
-Flask-SQLAlchemy
-flask-login
-=======
 Flask==3.1.0
 Flask-Login==0.6.3
 Flask-SQLAlchemy==3.1.1
->>>>>>> 676e9754cb2f1f7728c5404e23a55943cfed7a32
+
