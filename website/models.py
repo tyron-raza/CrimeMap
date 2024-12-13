@@ -19,3 +19,15 @@ class User(db.Model, UserMixin):
     first_name = db.Column(db.String(150))
     crimes = db.relationship('Crime')
 
+
+class Category(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), unique=True)
+    count = db.Column(db.Integer, default=0)
+
+class Location(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), unique=True)
+    crime_reported = db.Column(db.String(10000))
+    count = db.Column(db.Integer, default=0)
+    emergency_number = db.Column(db.String(15))
