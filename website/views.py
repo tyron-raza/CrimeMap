@@ -41,6 +41,13 @@ def home():
         crime.user = User.query.get(crime.user_id)
     return render_template("home.html", user=current_user, crimes=crimes)
 
+@views.route('/admin-tools')
+@login_required
+def admin_tools():
+    if current_user.id != 1:
+        flash('Access denied!', category='error')
+        return redirect(url_for('views.home'))
+    return render_template('admin_tools.html', user=current_user)
 
 @views.route('/delete-Crime', methods=['POST'])
 def delete_Crime():  
