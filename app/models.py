@@ -1,4 +1,5 @@
 from app import db
+from werkzeug.security import generate_password_hash
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -7,10 +8,13 @@ class User(db.Model):
     age = db.Column(db.Integer, nullable=False)
     nationality = db.Column(db.String(50), nullable=False)
     crimes_reported = db.Column(db.Integer, default=0)
-    password = db.Column(db.String(60), nullable=False)
+    password = db.Column(db.String(128), nullable=False)  # Increased size for hashed passwords
     
-    # Relationship with Crime (optional but helpful)
+    # Relationship with Crime
     crimes = db.relationship('Crime', backref='user', lazy=True)
+
+    def set_password(self, raw_password):
+        self.password = generate_password_hash(raw_password)
 
 class Crime(db.Model):
     id = db.Column(db.Integer, primary_key=True)

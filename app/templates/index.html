@@ -62,9 +62,10 @@
             Welcome to Crime Map – your trusted platform to report, verify and access detailed crime reports in your area.
         </p>
         <div class="btn-group">
-            <a href="/login" class="btn">Login</a>
-            <a href="/register" class="btn">Register</a>
+            <a href="{{ url_for('main.login') }}" class="btn">Login</a>
+            <a href="{{ url_for('main.register') }}" class="btn">Register</a>
         </div>
+        
     </div>
     <footer>
         &copy; 2024 Crime Map. All Rights Reserved.
