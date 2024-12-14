@@ -4,6 +4,10 @@
   <h1>Crimes</h1>
 </div>
 
+<div style="text-align: center; margin-bottom: 20px;">
+  <a href="{{ url_for('views.stats') }}" class="btn btn-info">View Stats</a>
+</div>
+
 <ul class="list-group">
   {% for crime in crimes %}
     <li class="list-group-item">
