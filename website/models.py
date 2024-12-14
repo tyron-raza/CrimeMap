@@ -19,6 +19,9 @@ class User(db.Model, UserMixin):
     first_name = db.Column(db.String(150))
     crimes = db.relationship('Crime')
 
-
+class Category(db.Model):
+    cat_id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), unique=True, nullable=False)
+    count = db.Column(db.Integer, default=0)
     
     

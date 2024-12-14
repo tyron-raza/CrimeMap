@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request, flash, jsonify
 from flask_login import login_required, current_user
-from .models import Crime, User
+from .models import Crime, User, Category
 from . import db
 import json
 
@@ -11,11 +11,10 @@ views = Blueprint('views', __name__)
 @login_required
 def home():
     if request.method == 'POST': 
-        title = request.form.get('Title')  # Gets the title from the HTML form
-        location = request.form.get('Location')  # Gets the location from the HTML form
-        data = request.form.get('Description')  # Gets the crime description from the HTML form
+        title = request.form.get('Title')  
+        location = request.form.get('Location')  
+        data = request.form.get('Description')  
 
-        # Validation
         if not title or len(title) < 3:
             flash('Title is too short!', category='error')
         elif not location or len(location) < 3:
@@ -23,7 +22,6 @@ def home():
         elif not data or len(data) < 5:
             flash('Description is too short!', category='error')
         else:
-            # Create and save a new crime report
             new_Crime = Crime(
                 title=title,
                 location=location,
@@ -34,25 +32,58 @@ def home():
             db.session.commit()
             flash('Crime posted!', category='success')
 
-    # Fetch all crimes to display on the page
     crimes = Crime.query.all()
     for crime in crimes:
-        # Query the associated user using the user_id foreign key
         crime.user = User.query.get(crime.user_id)
     return render_template("home.html", user=current_user, crimes=crimes)
 
-@views.route('/admin-tools')
+@views.route('/admin-tools', methods=['GET', 'POST'])
 @login_required
 def admin_tools():
     if current_user.id != 1:
         flash('Access denied!', category='error')
         return redirect(url_for('views.home'))
-    return render_template('admin_tools.html', user=current_user)
 
-@views.route('/delete-Crime', methods=['POST'])
-def delete_Crime():  
-    Crime = json.loads(request.data) # this function expects a JSON from the INDEX.js file 
-    CrimeId = Crime['CrimeId']
-    Crime = Crime.query.get(CrimeId)
+    crimes = Crime.query.all()
+    for crime in crimes:
+        crime.user = User.query.get(crime.user_id)
+    categories = Category.query.all()
 
-    return jsonify({})
+    if request.method == 'POST':
+        # Add new category
+        if 'add-category' in request.form:
+            name = request.form.get('category-name')
+            if Category.query.filter_by(name=name).first():
+                flash('Category already exists.', category='error')
+            else:
+                new_category = Category(name=name)
+                db.session.add(new_category)
+                db.session.commit()
+                flash('Category added successfully!', category='success')
+        # Remove category
+        elif 'remove-category' in request.form:
+            cat_id = request.form.get('category-id')
+            category = Category.query.get(cat_id)
+            if category:
+                db.session.delete(category)
+                db.session.commit()
+                flash('Category removed successfully!', category='success')
+            else:
+                flash('Category not found.', category='error')
+
+    return render_template('admin_tools.html',user=current_user, crimes=crimes, categories=categories)
+
+@views.route('/delete-crime/<int:crime_id>', methods=['POST'])
+@login_required
+def delete_crime(crime_id):
+    if current_user.id != 1:
+        flash('Access denied!', category='error')
+        return redirect(url_for('views.home'))
+    crime = Crime.query.get(crime_id)
+    if crime:
+        db.session.delete(crime)
+        db.session.commit()
+        flash('Crime deleted successfully!', category='success')
+    else:
+        flash('Crime not found.', category='error')
+    return redirect(url_for('views.admin_tools'))
