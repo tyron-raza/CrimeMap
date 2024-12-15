@@ -116,9 +116,9 @@
 </head>
 <body>
 
-<h1>Admin Tools</h1>
+<h1>Administrative Tools</h1>
 
-<h2>View All Crimes</h2>
+<h3>View All Crimes</h3>
 <table>
   <thead>
     <tr>
@@ -135,7 +135,7 @@
     <tr>
       <td>{{ crime.title }}</td>
       <td>{{ crime.location }}</td>
-      <td>{{ crime.data }}</td>
+      <td style="text-align: justify;">{{ crime.data }}</td>
       <td>{{ crime.date.strftime('%Y-%m-%d %H:%M:%S') }}</td>
       <td>{{ crime.user.first_name }}</td>
       <td>
