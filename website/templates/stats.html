@@ -1,28 +1,123 @@
+{% extends "base.html" %}
+{% block title %}Crime Statistics{% endblock %}
+{% block content %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script><br><br>
     <title>Crime Statistics</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-    
+
+    <style>
+        /* Global styles */
+        body {
+            background-color: #000; /* Black background */
+            color: #f00; /* Retro red text */
+            font-family: 'Press Start 2P', cursive;
+            text-align: center;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1, h2, h3 {
+            color: #f00;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+        }
+
+        /* Styling for the filter form */
+        form {
+            margin-bottom: 30px;
+            display: inline-block;
+            text-align: left;
+        }
+
+        form label {
+            color: #f00;
+            font-size: 12px;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        form select, form input, form button {
+            background-color: #222;
+            color: #f00;
+            border: 1px solid #f00;
+            padding: 5px 10px;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 12px;
+            margin-bottom: 10px;
+            display: block;
+            width: 100%;
+        }
+
+        form button {
+            background-color: #f00;
+            color: #000;
+            cursor: pointer;
+        }
+
+        form button:hover {
+            background-color: #ff4040;
+        }
+
+        /* Styling the table */
+        table {
+            width: 80%;
+            margin: 0 auto 30px auto;
+            border-collapse: collapse;
+            background-color: #222;
+            color: #f00;
+            font-size: 12px;
+        }
+
+        th, td {
+            padding: 10px;
+            border: 1px solid #f00;
+            text-align: center;
+        }
+
+        th {
+            background-color: #f00;
+            color: #000;
+        }
+
+        tr:nth-child(even) {
+            background-color: #333;
+        }
+
+        /* List styling for crimes by location */
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        ul li {
+            margin: 5px 0;
+        }
+
+        /* Custom hover effect */
+        a, button {
+            text-decoration: none;
+        }
+    </style>
 </head>
 <body>
     <h1>Crime Statistics</h1>
-    
-    
 
-    <!-- Filter Form -->
+
     <form method="get" action="{{ url_for('views.stats') }}">
-        <label for="location">Location:</label>
+        <label for="location">Filter by Location:</label>
         <select id="location" name="location">
             <option value="">All Locations</option>
             {% for location in locations %}
-                <option value="{{ location.name }}" {% if location_filter == location.name %}selected{% endif %}>
-                    {{ location.name }}
+                <option value="{{ location }}" {% if location_filter == location %}selected{% endif %}>
+                    {{ location }}
                 </option>
             {% endfor %}
         </select>
@@ -33,19 +128,19 @@
         <label for="end_date">End Date:</label>
         <input type="date" id="end_date" name="end_date" value="{{ request.args.get('end_date', '') }}">
 
-        <button type="submit">Filter</button>
+        <button type="submit">Apply Filter</button>
     </form>
 
     <h2>Total Crimes: {{ crime_count }}</h2>
-    
-    <h3>Crimes by Location:</h3>
+
+    <h3>Crimes by Location</h3>
     <ul>
         {% for location, count in location_counts.items() %}
             <li>{{ location }}: {{ count }} crime(s)</li>
         {% endfor %}
     </ul>
 
-    <h3>Crime Reports:</h3>
+    <h3>Crime Reports</h3>
     <table>
         <thead>
             <tr>
@@ -61,11 +156,11 @@
                     <td>{{ crime.title }}</td>
                     <td>{{ crime.location }}</td>
                     <td>{{ crime.date }}</td>
-                    <td>{{ crime.data }}</td>
+                    <td>{{ crime.description }}</td>
                 </tr>
             {% endfor %}
         </tbody>
     </table>
-     
 </body>
 </html>
+{% endblock %}

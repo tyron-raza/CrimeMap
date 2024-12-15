@@ -5,6 +5,7 @@ from . import db
 from datetime import datetime
 from collections import defaultdict
 from collections import Counter
+from flask import redirect, url_for
 import json
 
 views = Blueprint('views', __name__)
@@ -53,7 +54,7 @@ def admin_tools():
     categories = Category.query.all()
 
     if request.method == 'POST':
-        # Add new category
+ 
         if 'add-category' in request.form:
             name = request.form.get('category-name')
             if Category.query.filter_by(name=name).first():
@@ -63,7 +64,7 @@ def admin_tools():
                 db.session.add(new_category)
                 db.session.commit()
                 flash('Category added successfully!', category='success')
-        # Remove category
+
         elif 'remove-category' in request.form:
             cat_id = request.form.get('category-id')
             category = Category.query.get(cat_id)
@@ -109,19 +110,15 @@ def stats():
         locations=locations,
         counts=counts,
         location_filter=location_filter,
-        crime_count=len(filtered_crimes),location_counts=location_counts,)
+        crime_count=len(filtered_crimes),location_counts=location_counts, crimes=crimes)
     
 @views.route('/delete-crime/<int:crime_id>', methods=['POST'])
 @login_required
-def delete_crime(crime_id):
-    if current_user.id != 1:
-        flash('Access denied!', category='error')
-        return redirect(url_for('views.home'))
+def delete_crime():
+    data = request.get_json()
+    crime_id = data.get('crimeId')
     crime = Crime.query.get(crime_id)
     if crime:
         db.session.delete(crime)
         db.session.commit()
-        flash('Crime deleted successfully!', category='success')
-    else:
-        flash('Crime not found.', category='error')
-    return redirect(url_for('views.admin_tools'))
+    return jsonify({})
