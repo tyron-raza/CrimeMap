@@ -4,26 +4,80 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Live Map</title>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
     <style>
+        /* General Body Styling */
+        body {
+            background-color: #000; /* Black background */
+            color: #f00; /* Red text */
+            font-family: 'Press Start 2P', cursive;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Styling for the map */
         #map {
             height: 600px;
-            width: 100%;
+            width: 80%;
+            margin: 20px auto;
+            border: 2px solid #f00; /* Red border */
+            border-radius: 10px;
+        }
+
+        /* Styling for the form */
+        form {
+            margin: 20px auto;
+            width: 80%;
+            text-align: center;
+            background-color: #222; /* Dark gray background */
+            padding: 20px;
+            border: 2px solid #f00;
+            border-radius: 10px;
+        }
+
+        form input {
+            width: 60%;
+            padding: 10px;
+            font-size: 12px;
+            border: 2px solid #f00;
+            border-radius: 5px;
+            background-color: #000; /* Black */
+            color: #f00; /* Red text */
+            margin-bottom: 10px;
+        }
+
+        form button {
+            padding: 10px 20px;
+            font-size: 12px;
+            background-color: #f00; /* Red button */
+            color: #000; /* Black text */
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        form button:hover {
+            background-color: #ff4040; /* Bright red on hover */
+        }
+
+        /* Center the header */
+        h1 {
+            text-align: center;
+            color: #f00;
+            margin-top: 20px;
         }
     </style>
 </head>
 <body>
-    <div>
-        <h1>Live Map</h1>
-        <form method="POST">
-            <label for="location">Enter Location:</label>
-            <input type="text" id="location" name="location" placeholder="Search for a location" required>
-            <button type="submit">Search</button>
-        </form>
+    <h1>Live Map</h1>
+    <form method="POST">
+        <input type="text" name="location" placeholder="Search for a location" required>
+        <button type="submit">Search</button>
+    </form>
 
-        <!-- Display the map -->
-        <div id="map">
-            {{ map_html | safe }}
-        </div>
+    <!-- Display the map -->
+    <div id="map">
+        {{ map_html | safe }}
     </div>
 </body>
 </html>

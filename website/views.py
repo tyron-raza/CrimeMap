@@ -184,21 +184,31 @@ def educational_resources():
 @login_required
 def live_map():
     
-    m = folium.Map(location=[23.7725, 90.4253], zoom_start=16)
+    default_location = [23.7725, 90.4253]
+    zoom_level = 16
+    searched_location = None  
+
+    
+    m = folium.Map(location=default_location, zoom_start=zoom_level, tiles='cartodbdark_matter')
 
     if request.method == 'POST':
-        location = request.form.get('location')
-        if location:
+        search_query = request.form.get('location')  
+        if search_query:
             geolocator = Nominatim(user_agent="crime_map")
-            location = geolocator.geocode(location)
+            location = geolocator.geocode(search_query) 
             if location:
-                folium.Marker([location.latitude, location.longitude], popup=location.address).add_to(m)
+                searched_location = [location.latitude, location.longitude]
+            
+                m = folium.Map(location=searched_location, zoom_start=zoom_level, tiles='cartodbdark_matter')
+                
+                folium.Marker(
+                    [location.latitude, location.longitude],
+                    popup=location.address,
+                    tooltip="Searched Location"
+                ).add_to(m)
             else:
-                flash('Location not found!', category='error')
-        else:
-            flash('Please enter a location!', category='error')
+                flash('Location not found. Please try again.', category='error')
 
-   
-    map_html = m._repr_html_() 
-
+    
+    map_html = m._repr_html_()
     return render_template('live_map.html', user=current_user, map_html=map_html)
