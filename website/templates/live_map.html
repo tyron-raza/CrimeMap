@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Map</title>
+    <style>
+        #map {
+            height: 600px;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <h1>Live Map</h1>
+        <form method="POST">
+            <label for="location">Enter Location:</label>
+            <input type="text" id="location" name="location" placeholder="Search for a location" required>
+            <button type="submit">Search</button>
+        </form>
+
+        <!-- Display the map -->
+        <div id="map">
+            {{ map_html | safe }}
+        </div>
+    </div>
+</body>
+</html>

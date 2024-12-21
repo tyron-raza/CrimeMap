@@ -125,7 +125,6 @@
 </head>
 <body>
 
- 
     <div style="text-align: center;"> 
         <h1>Crime Reports</h1>
     </div>
@@ -134,18 +133,14 @@
         <a href="{{ url_for('views.stats') }}" class="btn btn-info">View Stats</a>
     </div>
 
-
-
     <div class="button-container">
-      <a href="{{ url_for('views.community_resources') }}" class="btn btn-info">Community Resources</a>
-      <a href="{{ url_for('views.law_enforcement') }}" class="btn btn-info">Law Enforcement</a>
-      <a href="{{ url_for('views.public_awareness') }}" class="btn btn-info">Public Awareness</a>
-      <a href="{{ url_for('views.educational_resources') }}" class="btn btn-info">Educational Resources</a>
-  </div>
-
-
-
-  
+        <a href="{{ url_for('views.community_resources') }}" class="btn btn-info">Community Resources</a>
+        <a href="{{ url_for('views.law_enforcement') }}" class="btn btn-info">Law Enforcement</a>
+        <a href="{{ url_for('views.public_awareness') }}" class="btn btn-info">Public Awareness</a>
+        <a href="{{ url_for('views.educational_resources') }}" class="btn btn-info">Educational Resources</a>
+        <!-- New Live Map Button -->
+        <a href="{{ url_for('views.live_map') }}" class="btn btn-info">Live Map</a>
+    </div>
 
     <ul class="list-group">
       {% for crime in crimes %}
@@ -163,7 +158,6 @@
       {% endfor %}
     </ul>
 
-
     <form method="POST">
       <label for="title">Title</label>
       <textarea name="Title" id="title" required></textarea>
@@ -179,7 +173,6 @@
       </div>
     </form>
 
- 
     <script>
       function deleteCrime(crimeId) {
         if (confirm('Are you sure you want to delete this crime?')) {

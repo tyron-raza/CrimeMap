@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, flash, jsonify
+from flask import Blueprint, render_template, request, flash, jsonify, redirect, url_for
 from flask_login import login_required, current_user
 from .models import Crime, User, Category, Location
 from . import db
@@ -8,8 +8,13 @@ from collections import Counter
 from flask import redirect, url_for
 import json
 
-views = Blueprint('views', __name__)
 
+import folium
+from geopy.geocoders import Nominatim
+from folium.plugins import MarkerCluster
+from .models import Crime, User
+
+views = Blueprint('views', __name__)
 
 @views.route('/', methods=['GET', 'POST'])
 @login_required
@@ -175,3 +180,25 @@ def public_awareness():
 def educational_resources():
     return render_template('educational_resources.html', user=current_user)
 
+@views.route('/live-map', methods=['GET', 'POST'])
+@login_required
+def live_map():
+    
+    m = folium.Map(location=[23.7725, 90.4253], zoom_start=16)
+
+    if request.method == 'POST':
+        location = request.form.get('location')
+        if location:
+            geolocator = Nominatim(user_agent="crime_map")
+            location = geolocator.geocode(location)
+            if location:
+                folium.Marker([location.latitude, location.longitude], popup=location.address).add_to(m)
+            else:
+                flash('Location not found!', category='error')
+        else:
+            flash('Please enter a location!', category='error')
+
+   
+    map_html = m._repr_html_() 
+
+    return render_template('live_map.html', user=current_user, map_html=map_html)
