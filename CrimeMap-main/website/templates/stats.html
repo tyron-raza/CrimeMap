@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
+    <title>Crime Statistics</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    
+</head>
+<body>
+    <h1>Crime Statistics</h1>
+    
+    
+
+    <!-- Filter Form -->
+    <form method="get" action="{{ url_for('views.stats') }}">
+        <label for="location">Location:</label>
+        <select id="location" name="location">
+            <option value="">All Locations</option>
+            {% for location in locations %}
+                <option value="{{ location.name }}" {% if location_filter == location.name %}selected{% endif %}>
+                    {{ location.name }}
+                </option>
+            {% endfor %}
+        </select>
+
+        <label for="start_date">Start Date:</label>
+        <input type="date" id="start_date" name="start_date" value="{{ request.args.get('start_date', '') }}">
+
+        <label for="end_date">End Date:</label>
+        <input type="date" id="end_date" name="end_date" value="{{ request.args.get('end_date', '') }}">
+
+        <button type="submit">Filter</button>
+    </form>
+
+    <h2>Total Crimes: {{ crime_count }}</h2>
+    
+    <h3>Crimes by Location:</h3>
+    <ul>
+        {% for location, count in location_counts.items() %}
+            <li>{{ location }}: {{ count }} crime(s)</li>
+        {% endfor %}
+    </ul>
+
+    <h3>Crime Reports:</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Location</th>
+                <th>Date</th>
+                <th>Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for crime in crimes %}
+                <tr>
+                    <td>{{ crime.title }}</td>
+                    <td>{{ crime.location }}</td>
+                    <td>{{ crime.date }}</td>
+                    <td>{{ crime.data }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    
+     <!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>
+
+
+<head>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>

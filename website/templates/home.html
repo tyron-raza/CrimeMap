@@ -134,6 +134,19 @@
         <a href="{{ url_for('views.stats') }}" class="btn btn-info">View Stats</a>
     </div>
 
+
+
+    <div class="button-container">
+      <a href="{{ url_for('views.community_resources') }}" class="btn btn-info">Community Resources</a>
+      <a href="{{ url_for('views.law_enforcement') }}" class="btn btn-info">Law Enforcement</a>
+      <a href="{{ url_for('views.public_awareness') }}" class="btn btn-info">Public Awareness</a>
+      <a href="{{ url_for('views.educational_resources') }}" class="btn btn-info">Educational Resources</a>
+  </div>
+
+
+
+  
+
     <ul class="list-group">
       {% for crime in crimes %}
         <li class="list-group-item">
