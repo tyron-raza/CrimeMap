@@ -3,13 +3,13 @@ from flask_login import UserMixin
 from sqlalchemy.sql import func
 
 
-class Crime(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(100))
-    location = db.Column(db.String(100))
-    data = db.Column(db.String(10000))
-    date = db.Column(db.DateTime(timezone=True), default=func.now())
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+# class Crime(db.Model):
+#     id = db.Column(db.Integer, primary_key=True)
+#     title = db.Column(db.String(100))
+#     location = db.Column(db.String(100))
+#     data = db.Column(db.String(10000))
+#     date = db.Column(db.DateTime(timezone=True), default=func.now())
+#     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     
 
 class User(db.Model, UserMixin):
@@ -33,12 +33,14 @@ class Location(db.Model):
 
 
 class Crime(db.Model):
+    __tablename__ = 'crime'
+    __table_args__ = {'extend_existing': True}  
+
     id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(200), nullable=False)
+    title = db.Column(db.String(100), nullable=False)
     description = db.Column(db.Text, nullable=False)
-    location = db.Column(db.String(200), nullable=False)
-    date = db.Column(db.Date, nullable=False)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    location = db.Column(db.String(100), nullable=False)
+    date = db.Column(db.DateTime, nullable=False)
 
     def __repr__(self):
         return f'<Crime {self.title}>'
