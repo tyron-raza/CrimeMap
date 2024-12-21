@@ -1,43 +1,200 @@
-{% extends "base.html" %} {% block title %}Home{% endblock %} {% block content
-%}
-<div style="text-align: center;"> 
-  <h1>Crimes</h1>
-</div>
+{% extends "base.html" %}
+{% block title %}Home{% endblock %}
+{% block content %}
 
-<div style="text-align: center; margin-bottom: 20px;">
-  <a href="{{ url_for('views.stats') }}" class="btn btn-info">View Stats</a>
-</div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <style>
+        /* Center alignment for header */
+        h1 {
+            text-align: center;
+            color: #f00;
+            font-family: 'Press Start 2P', cursive;
+            margin-bottom: 20px;
+        }
 
-<ul class="list-group">
-  {% for crime in crimes %}
-    <li class="list-group-item">
-      <strong>Title:</strong> {{ crime.title }} <br>
-      <strong>Location:</strong> {{ crime.location }} <br>
-      <strong>Description:</strong> {{ crime.data }} <br>
-      <strong>Date:</strong> {{ crime.date.strftime('%Y-%m-%d %H:%M:%S') }}<br>
-      <strong>Posted by:</strong> {{crime.user.first_name}}
-      
-      <button type="button" class="close" onClick="deleteCrime({crime})">
-        <span aria-hidden="true">&times;</span>
-      </button>
-    </li>
-  {% endfor %}
-</ul>
+        /* Crime List Styles */
+        .list-group {
+            width: 80%;
+            margin: 20px auto;
+            padding: 0;
+            background-color: #000; /* Black background */
+            border: 2px solid #f00; /* Red border */
+            border-radius: 10px;
+        }
 
-<form method="POST">
-  <label for="title">Title</label>
-  <textarea name="Title" id="title" class="form-control" required></textarea>
+        .list-group-item {
+            background-color: #222; /* Dark gray */
+            color: #f00; /* Red text */
+            border: 1px solid #f00; /* Red border between items */
+            font-family: 'Press Start 2P', cursive;
+            font-size: 12px;
+        }
 
-  <label for="data">Description</label>
-  <textarea name="Description" id="data" class="form-control" required></textarea>
+        .list-group-item strong {
+            color: #ff4040; /* Bright red for emphasis */
+        }
 
-  <label for="location">Location</label>
-  <textarea name="Location" id="location" class="form-control" required></textarea>
+        .list-group-item button.close {
+            background: none;
+            border: none;
+            color: #ff4040;
+            float: right;
+            font-size: 20px;
+            cursor: pointer;
+        }
 
-  <br />
-  <div style="text-align: center;">
-    <button type="submit" class="btn btn-primary">Report a Crime</button>
+        .list-group-item button.close:hover {
+            color: #c00; /* Dark red hover effect */
+        }
+
+        /* Form Styling */
+        form {
+            width: 80%;
+            margin: 40px auto;
+            padding: 20px;
+            background-color: #222; /* Dark gray */
+            border: 2px solid #f00; /* Red border */
+            border-radius: 10px;
+        }
+
+        form label {
+            color: #f00;
+            font-size: 14px;
+            font-family: 'Press Start 2P', cursive;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        form textarea {
+            width: 100%;
+            background-color: #000; /* Black */
+            color: #f00; /* Red text */
+            border: 1px solid #f00;
+            border-radius: 5px;
+            padding: 10px;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 12px;
+            margin-bottom: 15px;
+        }
+
+        form button {
+            background-color: #f00;
+            color: #000;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        form button:hover {
+            background-color: #ff4040; /* Bright red on hover */
+        }
+
+        /* Button Styles */
+        .btn-info {
+            background-color: #222;
+            color: #f00;
+            border: 1px solid #f00;
+            padding: 10px 15px;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 12px;
+            text-decoration: none;
+        }
+
+        .btn-info:hover {
+            background-color: #ff4040;
+            color: #000;
+        }
+
+        .btn-primary {
+            background-color: #f00;
+            color: #000;
+            border: none;
+            font-family: 'Press Start 2P', cursive;
+            padding: 10px 20px;
+        }
+
+        .btn-primary:hover {
+            background-color: #ff4040;
+        }
+    </style>
+</head>
+<body>
+
+ 
+    <div style="text-align: center;"> 
+        <h1>Crime Reports</h1>
+    </div>
+
+    <div style="text-align: center; margin-bottom: 20px;">
+        <a href="{{ url_for('views.stats') }}" class="btn btn-info">View Stats</a>
+    </div>
+
+
+    <div class="button-container">
+      <a href="{{ url_for('views.community_resources') }}" class="btn btn-info">Community Resources</a>
+      <a href="{{ url_for('views.law_enforcement') }}" class="btn btn-info">Law Enforcement</a>
+      <a href="{{ url_for('views.public_awareness') }}" class="btn btn-info">Public Awareness</a>
+      <a href="{{ url_for('views.educational_resources') }}" class="btn btn-info">Educational Resources</a>
   </div>
-</form>
+
+
+
+  
+    <ul class="list-group">
+      {% for crime in crimes %}
+        <li class="list-group-item">
+          <strong>Title:</strong> {{ crime.title }} <br>
+          <strong>Location:</strong> {{ crime.location }} <br>
+          <strong>Description:</strong> {{ crime.data }} <br>
+          <strong>Date:</strong> {{ crime.date.strftime('%Y-%m-%d %H:%M:%S') }}<br>
+          <strong>Posted by:</strong> {{ crime.user.first_name }}
+          
+          <button type="button" class="close" onClick="deleteCrime('{{ crime.id }}')">
+            <span aria-hidden="true">&times;</span>
+          </button> 
+        </li>
+      {% endfor %}
+    </ul>
+
+
+    <form method="POST">
+      <label for="title">Title</label>
+      <textarea name="Title" id="title" required></textarea>
+
+      <label for="data">Description</label>
+      <textarea name="Description" id="data" required></textarea>
+
+      <label for="location">Location</label>
+      <textarea name="Location" id="location" required></textarea>
+
+      <div style="text-align: center;">
+        <button type="submit" class="btn btn-primary">Report a Crime!</button>
+      </div>
+    </form>
+
+ 
+    <script>
+      function deleteCrime(crimeId) {
+        if (confirm('Are you sure you want to delete this crime?')) {
+          fetch("/delete-crime", {
+            method: "POST",
+            body: JSON.stringify({ crimeId: crimeId }),
+            headers: {
+              "Content-Type": "application/json"
+            }
+          }).then((_res) => {
+            window.location.href = "/";
+          });
+        }
+      }
+    </script>
+
+</body>
+</html>
 
 {% endblock %}

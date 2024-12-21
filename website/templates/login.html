@@ -1,28 +1,114 @@
-{% extends "base.html" %} {% block title %}Login{% endblock %} {% block content
-%}
-<form method="POST">
-  <h3 align="center">Login</h3>
-  <div class="form-group">
-    <label for="email">Email Address</label>
-    <input
-      type="email"
-      class="form-control"
-      id="email"
-      name="email"
-      placeholder="Enter email"
-    />
-  </div>
-  <div class="form-group">
-    <label for="password">Password</label>
-    <input
-      type="password"
-      class="form-control"
-      id="password"
-      name="password"
-      placeholder="Enter password"
-    />
-  </div>
-  <br />
-  <button type="submit" class="btn btn-primary">Login</button>
-</form>
+{% extends "base.html" %}
+{% block title %}Login{% endblock %}
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+ 
+    <style>
+        body {
+            background-color: #000; /* Black background */
+            color: #f00; /* Red text */
+            font-family: 'Press Start 2P', cursive;
+            margin: 0;
+            padding: 20px;
+            text-align: center;
+        }
+
+        form {
+            width: 100%;
+            max-width: 400px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #222; /* Dark gray background */
+            border: 2px solid #f00; /* Red border */
+            border-radius: 10px;
+            box-shadow: 0 0 10px #f00; /* Glow effect */
+        }
+
+        h3 {
+            margin-bottom: 20px;
+            color: #f00; /* Red text */
+            text-transform: uppercase;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+            text-align: left;
+        }
+
+        label {
+            color: #f00; /* Red label text */
+            font-size: 12px;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #f00;
+            border-radius: 5px;
+            background-color: #000;
+            color: #f00;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 12px;
+        }
+
+        input::placeholder {
+            color: #777; /* Gray placeholder text */
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #f00;
+            color: #000;
+            border: none;
+            border-radius: 5px;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #ff4040;
+        }
+
+        button:active {
+            background-color: #c00;
+        }
+    </style>
+</head>
+<body>
+    <form method="POST">
+        <h3>Login</h3>
+        <div class="form-group">
+            <label for="email">Email Address</label>
+            <input
+                type="email"
+                id="email"
+                name="email"
+                placeholder="Enter email"
+                required
+            />
+        </div>
+        <div class="form-group">
+            <label for="password">Password</label>
+            <input
+                type="password"
+                id="password"
+                name="password"
+                placeholder="Enter password"
+                required
+            />
+        </div>
+        <button type="submit">Login</button>
+    </form>
+</body>
+</html>
 {% endblock %}

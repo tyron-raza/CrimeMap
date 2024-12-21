@@ -30,3 +30,15 @@ class Location(db.Model):
     crime_reported = db.Column(db.String(10000))
     count = db.Column(db.Integer, default=0)
     emergency_number = db.Column(db.String(15))
+
+
+class Crime(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(200), nullable=False)
+    description = db.Column(db.Text, nullable=False)
+    location = db.Column(db.String(200), nullable=False)
+    date = db.Column(db.Date, nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+
+    def __repr__(self):
+        return f'<Crime {self.title}>'

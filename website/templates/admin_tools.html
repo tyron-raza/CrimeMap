@@ -2,10 +2,124 @@
 {% block title %}Admin Tools{% endblock %}
 {% block content %}
 
-<h1>Admin Tools</h1>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<h2>View All Crimes</h2>
-<table class="table">
+  
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            background-color: #000; /* Black background */
+            color: #f00; /* Red text */
+            font-family: 'Press Start 2P', cursive;
+            text-align: center;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1, h2 {
+            color: #f00;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+        }
+
+        /* Styling for the table */
+        table {
+            width: 90%;
+            margin: 20px auto;
+            border-collapse: collapse;
+            background-color: #222; /* Dark gray background */
+            color: #f00; /* Red text */
+            font-size: 12px;
+        }
+
+        th, td {
+            padding: 10px;
+            border: 1px solid #f00; /* Red border */
+            text-align: center;
+        }
+
+        th {
+            background-color: #f00;
+            color: #000; /* Black text */
+        }
+
+        tr:nth-child(even) {
+            background-color: #333; /* Slightly lighter gray */
+        }
+
+        tr:nth-child(odd) {
+            background-color: #111; /* Slightly darker gray */
+        }
+
+        /* Styling for buttons */
+        button {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background-color: #f00;
+            color: #000;
+        }
+
+        .btn-primary:hover {
+            background-color: #ff4040;
+        }
+
+        .btn-danger {
+            background-color: #900; /* Dark red */
+            color: #fff;
+        }
+
+        .btn-danger:hover {
+            background-color: #c00;
+        }
+
+        /* Styling for forms */
+        form {
+            width: 80%;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #222;
+            border: 2px solid #f00; /* Red border */
+            border-radius: 10px;
+        }
+
+        label {
+            display: block;
+            color: #f00;
+            font-size: 12px;
+            margin-bottom: 10px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #f00; /* Red border */
+            border-radius: 5px;
+            background-color: #000; /* Black background */
+            color: #f00; /* Red text */
+            font-family: 'Press Start 2P', cursive;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Administrative Tools</h1>
+
+<h3>View All Crimes</h3>
+<table>
   <thead>
     <tr>
       <th>Title</th>
@@ -21,7 +135,7 @@
     <tr>
       <td>{{ crime.title }}</td>
       <td>{{ crime.location }}</td>
-      <td>{{ crime.data }}</td>
+      <td style="text-align: justify;">{{ crime.data }}</td>
       <td>{{ crime.date.strftime('%Y-%m-%d %H:%M:%S') }}</td>
       <td>{{ crime.user.first_name }}</td>
       <td>
@@ -37,18 +151,21 @@
 <h2>Manage Categories</h2>
 <form method="POST">
   <label for="category-name">Add New Category:</label>
-  <input type="text" name="category-name" id="category-name" class="form-control" required />
-  <button type="submit" name="add-category" class="btn btn-primary mt-2">Add Category</button>
+  <input type="text" name="category-name" id="category-name" required />
+  <button type="submit" name="add-category" class="btn btn-primary">Add Category</button>
 </form>
 
-<form method="POST" class="mt-4">
+<form method="POST">
   <label for="category-id">Remove Category:</label>
-  <select name="category-id" id="category-id" class="form-control" required>
+  <select name="category-id" id="category-id" required>
     {% for category in categories %}
     <option value="{{ category.cat_id }}">{{ category.name }}</option>
     {% endfor %}
   </select>
-  <button type="submit" name="remove-category" class="btn btn-danger mt-2">Remove Category</button>
+  <button type="submit" name="remove-category" class="btn btn-danger">Remove Category</button>
 </form>
+
+</body>
+</html>
 
 {% endblock %}

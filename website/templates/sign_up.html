@@ -1,48 +1,135 @@
-{% extends "base.html" %} {% block title %}Sign Up{% endblock %} {% block
-content %}
-<form method="POST">
-  <h3 align="center">Sign Up</h3>
-  <div class="form-group">
-    <label for="email">Email Address</label>
-    <input
-      type="email"
-      class="form-control"
-      id="email"
-      name="email"
-      placeholder="Enter email"
-    />
-  </div>
-  <div class="form-group">
-    <label for="firstName">First Name</label>
-    <input
-      type="text"
-      class="form-control"
-      id="firstName"
-      name="firstName"
-      placeholder="Enter first name"
-    />
-  </div>
-  <div class="form-group">
-    <label for="password1">Password</label>
-    <input
-      type="password"
-      class="form-control"
-      id="password1"
-      name="password1"
-      placeholder="Enter password"
-    />
-  </div>
-  <div class="form-group">
-    <label for="password2">Password (Confirm)</label>
-    <input
-      type="password"
-      class="form-control"
-      id="password2"
-      name="password2"
-      placeholder="Confirm password"
-    />
-  </div>
-  <br />
-  <button type="submit" class="btn btn-primary">Submit</button>
-</form>
+{% extends "base.html" %}
+{% block title %}Sign Up{% endblock %}
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            background-color: #000; /* Black background */
+            color: #f00; /* Red text */
+            font-family: 'Press Start 2P', cursive;
+            text-align: center;
+            margin: 0;
+            padding: 20px;
+        }
+
+        form {
+            width: 100%;
+            max-width: 400px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #222; /* Dark gray */
+            border: 2px solid #f00; /* Red border */
+            border-radius: 10px;
+            box-shadow: 0 0 10px #f00; /* Red glow effect */
+        }
+
+        h3 {
+            color: #f00;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+            text-align: left;
+        }
+
+        label {
+            display: block;
+            color: #f00;
+            font-size: 12px;
+            margin-bottom: 5px;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #f00;
+            border-radius: 5px;
+            background-color: #000;
+            color: #f00;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 12px;
+        }
+
+        input::placeholder {
+            color: #777;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #f00;
+            color: #000;
+            border: none;
+            border-radius: 5px;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #ff4040;
+        }
+
+        button:active {
+            background-color: #c00;
+        }
+    </style>
+</head>
+<body>
+    <form method="POST">
+        <h3>Sign Up</h3>
+        <div class="form-group">
+            <label for="email">Email Address</label>
+            <input
+                type="email"
+                id="email"
+                name="email"
+                placeholder="Enter email"
+                required
+            />
+        </div>
+        <div class="form-group">
+            <label for="firstName">First Name</label>
+            <input
+                type="text"
+                id="firstName"
+                name="firstName"
+                placeholder="Enter first name"
+                required
+            />
+        </div>
+        <div class="form-group">
+            <label for="password1">Password</label>
+            <input
+                type="password"
+                id="password1"
+                name="password1"
+                placeholder="Enter password"
+                required
+            />
+        </div>
+        <div class="form-group">
+            <label for="password2">Password (Confirm)</label>
+            <input
+                type="password"
+                id="password2"
+                name="password2"
+                placeholder="Confirm password"
+                required
+            />
+        </div>
+        <button type="submit">Submit</button>
+    </form>
+</body>
+</html>
 {% endblock %}
