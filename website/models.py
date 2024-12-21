@@ -4,16 +4,12 @@ from sqlalchemy.sql import func
 
 
 class Crime(db.Model):
-    __tablename__ = 'crime'
-    __table_args__ = {'extend_existing': True}  
-    
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(100))
     location = db.Column(db.String(100))
     data = db.Column(db.String(10000))
     date = db.Column(db.DateTime(timezone=True), default=func.now())
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-   
     
 
 class User(db.Model, UserMixin):
@@ -34,17 +30,3 @@ class Location(db.Model):
     crime_reported = db.Column(db.String(10000))
     count = db.Column(db.Integer, default=0)
     emergency_number = db.Column(db.String(15))
-
-
-# class Crime(db.Model):
-#     __tablename__ = 'crime'
-#     __table_args__ = {'extend_existing': True}  
-
-#     id = db.Column(db.Integer, primary_key=True)
-#     title = db.Column(db.String(100), nullable=False)
-#     description = db.Column(db.Text, nullable=False)
-#     location = db.Column(db.String(100), nullable=False)
-#     date = db.Column(db.DateTime, nullable=False)
-
-    def __repr__(self):
-        return f'<Crime {self.title}>'
