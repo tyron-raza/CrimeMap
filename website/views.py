@@ -123,8 +123,6 @@ def delete_crime():
         db.session.commit()
     return jsonify({})
 
-
-
 #----------------------------------------------------------------------------------------------
 
 
@@ -176,5 +174,4 @@ def public_awareness():
 @login_required
 def educational_resources():
     return render_template('educational_resources.html', user=current_user)
-
 
