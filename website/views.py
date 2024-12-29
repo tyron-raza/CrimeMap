@@ -119,14 +119,19 @@ def stats():
     
 @views.route('/delete-crime/<int:crime_id>', methods=['POST'])
 @login_required
-def delete_crime():
-    data = request.get_json()
-    crime_id = data.get('crimeId')
+def delete_crime(crime_id):
+    if current_user.id != 1:  # Restrict access to admin
+        flash('Access denied!', category='error')
+        return redirect(url_for('views.home'))
+
     crime = Crime.query.get(crime_id)
     if crime:
         db.session.delete(crime)
         db.session.commit()
-    return jsonify({})
+        flash('Crime deleted successfully!', category='success')
+    else:
+        flash('Crime not found.', category='error')
+    return redirect(url_for('views.admin_tools'))  # Redirect back to admin tools page
 
 #----------------------------------------------------------------------------------------------
 
