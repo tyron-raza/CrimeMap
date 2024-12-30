@@ -140,19 +140,26 @@
         <a href="{{ url_for('views.educational_resources') }}" class="btn btn-info">Educational Resources</a>
     </div>
 
-    <ul class="list-group">
+    <ul class="container">
       {% for crime in crimes %}
-        <li class="list-group-item">
-          <strong>Title:</strong> {{ crime.title }} <br>
-          <strong>Location:</strong> {{ crime.location }} <br>
-          <strong>Description:</strong> {{ crime.data }} <br>
-          <strong>Date:</strong> {{ crime.date.strftime('%Y-%m-%d %H:%M:%S') }}<br>
-          <strong>Posted by:</strong> {{ crime.user.first_name }}
-          
-          <button type="button" class="close" onClick= "{{ url_for('views.delete_crime', crime_id=crime.id) }}"> 
-            <span aria-hidden="true">&times;</span>
-          </button> 
-        </li>
+      <div class="container bg-black text-danger p-4 mb-3" style="border: 2px solid red; border-radius: 15px;">
+        <div class="d-flex justify-content-between align-items-center">
+            <!-- Title -->
+            <h3 class="fw-bold text-danger mb-0">{{ crime.title }}</h3>
+            <!-- Location -->
+            <span class="text-danger">{{ crime.location }}</span>
+        </div>
+        <hr class="border-danger my-2">
+        <!-- Description -->
+        <p class="text-danger mb-1">{{ crime.data }}</p>
+        <!-- Date and User -->
+        <small class="text-danger">
+            <strong>Date:</strong> {{ crime.date.strftime('%Y-%m-%d %H:%M:%S') }} | 
+            <strong>Posted by:</strong> {{ crime.user.first_name }}
+        </small>
+    </div>
+    
+    
       {% endfor %}
     </ul>
 
