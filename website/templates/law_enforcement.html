@@ -2,85 +2,64 @@
 
 {% block content %}
 
-<h2>Report a Crime</h2>
 
-    {% if error %}
-        <div class="alert alert-danger">
-            {{ error }}
-        </div>
-    {% endif %}
+{% if error %}
+    <div class="alert alert-danger">
+        {{ error }}
+    </div>
+{% endif %}
 
-    <form method="POST" action="{{ url_for('views.submit_crime') }}">
-        <div class="form-group">
-            <label for="title">Crime Title</label>
-            <input type="text" id="title" name="title" class="form-control" required>
-        </div>
-
-        <div class="form-group">
-            <label for="description">Crime Description</label>
-            <textarea id="description" name="description" class="form-control" required></textarea>
-        </div>
-
-        <div class="form-group">
-            <label for="location">Crime Location</label>
-            <input type="text" id="location" name="location" class="form-control" required>
-        </div>
-
-        <div class="form-group">
-            <label for="date">Date of Crime</label>
-            <input type="date" id="date" name="date" class="form-control" required>
-        </div>
-
-        <button type="submit" class="btn btn-primary">Submit Crime</button>
-    </form>
-
-
-<div class="container">
-    <h1 class="text-center">Law Enforcement Integration</h1>
+<div class="container bg-black text-red p-4 rounded">
+    <!-- Law Enforcement Integration Section -->
+    <h1 class="text-center text-red">Law Enforcement Integration</h1>
     <p class="text-center">Collaborate with law enforcement agencies to manage and analyze crime data.</p>
+        
+    <div class="col-mt-4 bg-black">
+        <!-- Important Contacts Section -->
+        <h3 class="text-red">Important Contacts</h3>
+        <p>Here are the key law enforcement agency contacts in Bangladesh:</p>
+        <ul class="list-group">
+            <li class="list-group-item" style="background-color: black; color: red;">
+                <strong>Bangladesh Police</strong>
+                <button class="btn btn-danger btn-sm float-end" onclick="location.href='tel:+8801713377777'">Call Now</button>
+                <br>Email: <a href="mailto:info@police.gov.bd" class="text-red">info@police.gov.bd</a>
+            </li>
+            <li class="list-group-item" style="background-color: black; color: red;">
+                <strong>Rapid Action Battalion (RAB)</strong>
+                <button class="btn btn-danger btn-sm float-end" onclick="location.href='tel:+8801777777777'">Call Now</button>
+                <br>Email: <a href="mailto:info@rab.gov.bd" class="text-red">info@rab.gov.bd</a>
+            </li>
+            <li class="list-group-item" style="background-color: black; color: red;">
+                <strong>Fire Service & Civil Defence</strong>
+                <button class="btn btn-danger btn-sm float-end" onclick="location.href='tel:199'">Call Now</button>
+                <br>Email: <a href="mailto:info@fireservice.gov.bd" class="text-red">info@fireservice.gov.bd</a>
+            </li>
+            <li class="list-group-item" style="background-color: black; color: red;">
+                <strong>National Emergency Number</strong>
+                <button class="btn btn-danger btn-sm float-end" onclick="location.href='tel:999'">Call Now</button>
+                <br>
+            </li>
+        </ul>
+    </div>
     
-    <div class="row">
-        <div class="col-md-6">
-            <h3>Submit New Crime Report</h3>
-            <form method="POST" action="{{ url_for('submit_crime') }}">
-                <div class="form-group">
-                    <label for="title">Crime Title</label>
-                    <input type="text" class="form-control" id="title" name="title" required>
-                </div>
-                <div class="form-group">
-                    <label for="location">Location</label>
-                    <input type="text" class="form-control" id="location" name="location" required>
-                </div>
-                <div class="form-group">
-                    <label for="description">Crime Description</label>
-                    <textarea class="form-control" id="description" name="description" rows="4" required></textarea>
-                </div>
-                <button type="submit" class="btn btn-primary">Submit Report</button>
-            </form>
-        </div>
-
-        <div class="col-md-6">
-            <h3>Law Enforcement Dashboard</h3>
-            <p>View and manage ongoing cases and reported crimes.</p>
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>Crime Title</th>
-                        <th>Location</th>
-                        <th>Date Reported</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for crime in crimes %}
-                    <tr>
-                        <td>{{ crime.title }}</td>
-                        <td>{{ crime.location }}</td>
-                        <td>{{ crime.date }}</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+    <!-- Other Resources Section -->
+    <div class="row mt-4 bg-black">
+        <div class="col-12">
+            <h3 class="text-red">Other Resources</h3>
+            <ul class="list-group">
+                <li class="list-group-item" style="background-color: black; color: red;">
+                    <strong>Cyber Crime Unit</strong>
+                    <button class="btn btn-danger btn-sm float-end" onclick="location.href='mailto:cybercrime@police.gov.bd'">Email</button>
+                    <br>Website: <a href="https://www.police.gov.bd/cyber-crime-unit" class="text-red">Visit Website</a>
+                </li>
+                <li class="list-group-item" style="background-color: black; color: red;">
+                    <strong>Bangladesh Legal Aid Services</strong>
+                    <button class="btn btn-danger btn-sm float-end" onclick="location.href='mailto:info@bls.org.bd'">Email</button>
+                    <br>Website: <a href="https://www.blast.org.bd" class="text-red">Visit Website</a>
+                </li>
+            </ul>
         </div>
     </div>
 </div>
+
 {% endblock %}
