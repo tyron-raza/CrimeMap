@@ -161,6 +161,54 @@
             {% endfor %}
         </tbody>
     </table>
+
+    <h3>Crime Statistics by Location</h3>
+    <canvas id="crimeChart"></canvas>
+
+    <script>
+        // Get data from Python
+        const locations = {{ locations | tojson }};
+        const counts = {{ counts | tojson }};
+
+        // Create the chart
+        const ctx = document.getElementById('crimeChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: locations,
+                datasets: [{
+                    label: 'Number of Crimes',
+                    data: counts,
+                    backgroundColor: 'rgba(255, 0, 0, 0.5)',
+                    borderColor: 'rgba(255, 0, 0, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            color: '#f00'
+                        }
+                    },
+                    x: {
+                        ticks: {
+                            color: '#f00'
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        labels: {
+                            color: '#f00'
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+
 </body>
 </html>
 {% endblock %}
