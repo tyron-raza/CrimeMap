@@ -23,6 +23,7 @@ def home():
         title = request.form.get('Title')  
         location = request.form.get('Location')  
         data = request.form.get('Description')  
+        category_id = request.form.get('category-id')  
 
         if not title or len(title) < 3:
             flash('Title is too short!', category='error')
@@ -35,16 +36,22 @@ def home():
                 title=title,
                 location=location,
                 data=data,
-                user_id=current_user.id
-            )
+                user_id=current_user.id )
             db.session.add(new_Crime)
-            db.session.commit()
-            flash('Crime posted!', category='success')
+
+            selected_category = Category.query.filter_by(cat_id=category_id).first()
+            if selected_category:
+                selected_category.count += 1
+                db.session.commit()
+                flash('Crime posted and category updated!', category='success')
+            else:
+                flash('Invalid category selected!', category='error')
 
     crimes = Crime.query.all()
+    categories = Category.query.all()
     for crime in crimes:
         crime.user = User.query.get(crime.user_id)
-    return render_template("home.html", user=current_user, crimes=crimes)
+    return render_template("home.html", user=current_user, crimes=crimes, categories=categories)
 
 @views.route('/admin-tools', methods=['GET', 'POST'])
 @login_required
@@ -79,7 +86,7 @@ def admin_tools():
                 flash('Category removed successfully!', category='success')
             else:
                 flash('Category not found.', category='error')
-
+    
     return render_template('admin_tools.html',user=current_user, crimes=crimes, categories=categories)
 
 @views.route('/stats', methods=['GET'])

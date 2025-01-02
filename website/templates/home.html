@@ -164,20 +164,29 @@
     </ul>
 
     <form method="POST">
-      <label for="title">Title</label>
-      <textarea name="Title" id="title" required></textarea>
-
-      <label for="data">Description</label>
-      <textarea name="Description" id="data" required></textarea>
-
-      <label for="location">Location</label>
-      <textarea name="Location" id="location" required></textarea>
-
-      <div style="text-align: center;">
-        <button type="submit" class="btn btn-primary">Report a Crime!</button>
-      </div>
+        <label for="title">Title</label>
+        <textarea name="Title" id="title" required></textarea>
+    
+        <label for="data">Description</label>
+        <textarea name="Description" id="data" required></textarea>
+    
+        <label for="location">Location</label>
+        <textarea name="Location" id="location" required></textarea>
+    
+        <label for="category-id">Select Category:</label>
+        <select name="category-id" id="category-id" required>
+            <option value="" disabled selected>Select a category</option>
+            {% for category in categories %}
+            <option value="{{ category.cat_id }}">{{ category.name }}</option>
+            {% endfor %}
+        </select>
+    
+        <div style="text-align: center;">
+            <button type="submit" class="btn btn-primary">Report a Crime!</button>
+        </div>
     </form>
-
+    
+    
     <script>
       function deleteCrime(crimeId) {
         if (confirm('Are you sure you want to delete this crime?')) {
