@@ -1,14 +1,18 @@
 from flask import Blueprint, render_template, request, flash, jsonify, redirect, url_for
 from flask_login import login_required, current_user
-from .models import Crime, User, Category, Location
+from .models import Crime, User, Category, Location, Chat
 from . import db
 from datetime import datetime
 from collections import defaultdict
 from collections import Counter
 from flask import redirect, url_for
 import json
-
-
+from datetime import datetime
+from flask import session
+from flask import render_template, request, flash
+from geopy.geocoders import Nominatim
+import folium
+import requests
 import folium
 from geopy.geocoders import Nominatim
 from folium.plugins import MarkerCluster
@@ -19,39 +23,31 @@ views = Blueprint('views', __name__)
 @views.route('/', methods=['GET', 'POST'])
 @login_required
 def home():
-    if request.method == 'POST': 
-        title = request.form.get('Title')  
-        location = request.form.get('Location')  
-        data = request.form.get('Description')  
-        category_id = request.form.get('category-id')  
+    if request.method == 'POST':
+        text = request.form['text']
 
-        if not title or len(title) < 3:
-            flash('Title is too short!', category='error')
-        elif not location or len(location) < 3:
-            flash('Location is too short!', category='error')
-        elif not data or len(data) < 5:
-            flash('Description is too short!', category='error')
-        else:
-            new_Crime = Crime(
-                title=title,
-                location=location,
-                data=data,
-                user_id=current_user.id )
-            db.session.add(new_Crime)
+        # Add the new chat message to the database
+        new_message = Chat(user_id=current_user.id, text=text)
+        db.session.add(new_message)
+        db.session.commit()
 
-            selected_category = Category.query.filter_by(cat_id=category_id).first()
-            if selected_category:
-                selected_category.count += 1
-                db.session.commit()
-                flash('Crime posted and category updated!', category='success')
-            else:
-                flash('Invalid category selected!', category='error')
+        return redirect(url_for('views.home'))
 
+    # Fetch all chat messages
+    chats = Chat.query.all()
     crimes = Crime.query.all()
     categories = Category.query.all()
     for crime in crimes:
         crime.user = User.query.get(crime.user_id)
-    return render_template("home.html", user=current_user, crimes=crimes, categories=categories)
+    return render_template("home.html", user=current_user, crimes=crimes, categories=categories, chats=chats)
+
+@views.route('/clear_chats', methods=['POST'])
+def clear_chats():
+    if current_user.id == 1:  # Ensure the user is the admin (or any role you prefer)
+        Chat.query.delete()  # This deletes all records in the Chat table
+        db.session.commit()  # Commit the changes to the database
+    return redirect(url_for('views.home'))  # Redirect back to the home page
+
 
 @views.route('/admin-tools', methods=['GET', 'POST'])
 @login_required
@@ -159,8 +155,39 @@ def submit_crime():
     else:
         return redirect(url_for('views.law_enforcement', error='Please fill in all fields'))
 
+@views.route('/report_crime', methods=['GET', 'POST'])
+@login_required
+def report_crime():
+    crimes = Crime.query.all()
+    categories = Category.query.all()
+    if request.method == 'POST': 
+        title = request.form.get('Title')  
+        location = request.form.get('Location')  
+        data = request.form.get('Description')  
+        category_id = request.form.get('category-id')  
 
+        if not title or len(title) < 3:
+            flash('Title is too short!', category='error')
+        elif not location or len(location) < 3:
+            flash('Location is too short!', category='error')
+        elif not data or len(data) < 5:
+            flash('Description is too short!', category='error')
+        else:
+            new_Crime = Crime(
+                title=title,
+                location=location,
+                data=data,
+                user_id=current_user.id )
+            db.session.add(new_Crime)
 
+            selected_category = Category.query.filter_by(cat_id=category_id).first()
+            if selected_category:
+                selected_category.count += 1
+                db.session.commit()
+                flash('Crime posted and category updated!', category='success')
+            else:
+                flash('Invalid category selected!', category='error')
+    return render_template("report_crime.html", user=current_user, crimes=crimes, categories=categories)
 
 @views.route('/law_enforcement', methods=['GET', 'POST'])
 @login_required
@@ -194,33 +221,47 @@ def educational_resources():
 
 @views.route('/live-map', methods=['GET', 'POST'])
 @login_required
+
+
+
 def live_map():
-    
-    default_location = [23.7725, 90.4253]
+    default_location = [23.7725, 90.4253]  # Default location (your location or any default place)
     zoom_level = 16
     searched_location = None  
 
-    
     m = folium.Map(location=default_location, zoom_start=zoom_level, tiles='cartodbdark_matter')
 
     if request.method == 'POST':
-        search_query = request.form.get('location')  
-        if search_query:
+        # Check if the button to center on the user location is pressed
+        if 'center_on_user' in request.form:
+            # Use geolocation API or any other method to get the user's current location
             geolocator = Nominatim(user_agent="crime_map")
-            location = geolocator.geocode(search_query) 
+            location = geolocator.geocode("Your IP or geolocation lookup")  # For example, use IP or user agent
             if location:
-                searched_location = [location.latitude, location.longitude]
-            
-                m = folium.Map(location=searched_location, zoom_start=zoom_level, tiles='cartodbdark_matter')
-                
+                user_location = [location.latitude, location.longitude]
+                m = folium.Map(location=user_location, zoom_start=zoom_level, tiles='cartodbdark_matter')
                 folium.Marker(
-                    [location.latitude, location.longitude],
-                    popup=location.address,
-                    tooltip="Searched Location"
+                    user_location,
+                    popup="Your Location",
+                    tooltip="Current Location"
                 ).add_to(m)
             else:
-                flash('Location not found. Please try again.', category='error')
+                flash('Could not fetch your current location. Please try again.', category='error')
 
-    
-    map_html = m._repr_html_()
-    return render_template('live_map.html', user=current_user, map_html=map_html)
+    map_html = m._repr_html_()  # Convert map to HTML
+    return render_template('live_map.html', map_html=map_html, user=current_user)
+
+
+# Function to get the user location based on their IP
+def get_user_location():
+    try:
+        # You can use the IPInfo API to get the user's location based on their IP address
+        ip_info = requests.get('https://ipinfo.io/json').json()
+        loc = ip_info['loc'].split(',')  # loc returns a string like "lat,long"
+        lat = float(loc[0])
+        lon = float(loc[1])
+        return [lat, lon]
+    except Exception as e:
+        print("Error in getting user location:", e)
+        return [23.8103, 90.4125]  # Default to Dhaka if location cannot be fetched
+

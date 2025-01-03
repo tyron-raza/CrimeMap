@@ -6,7 +6,22 @@
 <html lang="en">
 <head>
     <style>
-        /* Center alignment for header */
+    .chat-container::-webkit-scrollbar {
+        width: 8px;  /* Width of the scrollbar */
+        background-color: black; /* Black background for the track */
+    }
+
+    /* Style the scrollbar thumb */
+    .chat-container::-webkit-scrollbar-thumb {
+        background-color: red;  /* Red color for the thumb */
+        border-radius: 4px; /* Optional: rounded corners for the thumb */
+    }
+
+    /* For Firefox */
+    .chat-container {
+        scrollbar-width: thin; /* Thin scrollbar for Firefox */
+        scrollbar-color: red black; /* Red thumb and black track for Firefox */
+    }
         h1 {
             text-align: center;
             color: #f00;
@@ -50,14 +65,6 @@
         }
 
         /* Form Styling */
-        form {
-            width: 80%;
-            margin: 40px auto;
-            padding: 20px;
-            background-color: #222; /* Dark gray */
-            border: 2px solid #f00; /* Red border */
-            border-radius: 10px;
-        }
 
         form label {
             color: #f00;
@@ -147,6 +154,8 @@
         <a href="{{ url_for('views.educational_resources') }}" class="btn btn-info">Educational Resources</a>
     </div>
 
+
+    
     <ul class="container">
       {% for crime in crimes %}
       <div class="container bg-black text-danger p-4 mb-3" style="border: 2px solid red; border-radius: 15px;">
@@ -164,34 +173,46 @@
             <strong>Date:</strong> {{ crime.date.strftime('%Y-%m-%d %H:%M:%S') }} | 
             <strong>Posted by:</strong> {{ crime.user.first_name }}
         </small>
+        
     </div>
     
     
       {% endfor %}
     </ul>
-
-    <form method="POST">
-        <label for="title">Title</label>
-        <textarea name="Title" id="title" required></textarea>
-    
-        <label for="data">Description</label>
-        <textarea name="Description" id="data" required></textarea>
-    
-        <label for="location">Location</label>
-        <textarea name="Location" id="location" required></textarea>
-    
-        <label for="category-id">Select Category:</label>
-        <select name="category-id" id="category-id" required>
-            <option value="" disabled selected>Select a category</option>
-            {% for category in categories %}
-            <option value="{{ category.cat_id }}">{{ category.name }}</option>
+    <div style="position: absolute; left: 1%; right: 1%; top: 100px; width: 350px; height: 800px; border: 1px solid #ff0000; padding: 10px;">
+        <h3 class="fw-bold text-danger mb-4" style="text-align: center; margin: 0; font-size: 20px;">Chat</h3>
+        <div style="max-height: calc(100% - 60px); overflow-y: scroll; padding-right: 5px;" class="chat-container">
+            {% for chat in chats %}
+                <div class="container bg-black text-danger" style="margin-bottom: 15px; font-size: 12px;">
+                    <small class="text-danger" style="font-size: 8px;">
+                         <strong>Date:</strong> {{ chat.timestamp.strftime('%Y-%m-%d %H:%M:%S') }} <br>
+                    </small>
+                    <h4 class="fw-bold text-danger mb-0" style="font-size: 15px;">{{ chat.text }}</h4>
+                </div>
             {% endfor %}
-        </select>
-    
-        <div style="text-align: center;">
-            <button type="submit" class="btn btn-primary">Report a Crime!</button>
         </div>
-    </form>
+ 
+    </div>       
+        <form method="POST" action="/" style="position: absolute; left: 1%; right: 1%; top: 900px; width: 350px; height: 50px; border: 1px solid #ff0000; padding: 10px; ">
+            <textarea name="text" required style="width: 75%; height: 30px; resize: none; font-size: 12px; margin-right: 10px; overflow: hidden; white-space: nowrap;"></textarea>
+            <button type="submit" style="position: absolute; left: 75%; right: 1%; width: 20%; height: 30px; padding: 5px; font-size: 10px;">Send</button>
+        </form>
+        {% if user.id == 1 %}
+        <form method="POST" action="{{ url_for('views.clear_chats') }}" style="position: absolute; left: 1%; right: 1%; top: 950px; width: 350px; height: 50px; border: 1px solid #ff0000;">
+            <button type="submit" class="btn btn-danger" style="color: #000;">Clear Chats from View</button>
+        </form>
+        {% endif %}
+
+    
+    <br>
+    <br>
+    <br>
+
+    
+    <div style="text-align: center; position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);">
+        <a href="/report_crime" class="btn btn-primary" role="button">Report a Crime!</a>
+    </div>
+     
     
     
     <script>

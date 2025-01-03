@@ -26,6 +26,7 @@
     <title>{% block title %}Home{% endblock %}</title>
 
     <style>
+
       /* Global Styles */
       body {
         background-color: #000; /* Black background */
@@ -93,7 +94,7 @@
 
       <div class="collapse navbar-collapse" id="navbar">
         <ul class="navbar-nav ml-auto">
-          {% if user.is_authenticated %}
+          {% if current_user.is_authenticated %}
           <li class="nav-item">
             <a class="nav-link" id="home" href="/">Home</a>
           </li>
