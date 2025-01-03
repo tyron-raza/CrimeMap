@@ -73,16 +73,46 @@
 </head>
 <body>
     <h1>Live Map</h1>
-    <form method="POST">
-        <input type="text" name="location" placeholder="Search for a location" required>
-        <button type="submit">Search</button>
+    <form id="location-form" method="POST">
+        <button id="center-button" class="btn btn-primary">Center on My Location</button>
     </form>
 
-    <!-- Display the map -->
-    <div id="map">
-        {{ map_html | safe }}
-    </div>
+    <div id="map">{{ map_html | safe }}</div>
 
+    <script>
+        // Add button event listener to get and send location data
+        document.getElementById('center-button').addEventListener('click', function(event) {
+            event.preventDefault();  // Prevent form submission
+
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function(position) {
+                    var userLat = position.coords.latitude;
+                    var userLng = position.coords.longitude;
+
+                    // Send location data to the backend using AJAX
+                    $.ajax({
+                        url: '/live_map',  // URL where your view is located
+                        type: 'POST',
+                        data: {
+                            latitude: userLat,
+                            longitude: userLng
+                        },
+                        success: function(response) {
+                            // Inject the updated map HTML into the page
+                            document.getElementById('map').innerHTML = response;
+                        },
+                        error: function() {
+                            alert('Failed to send location to the backend');
+                        }
+                    });
+                }, function() {
+                    alert("Geolocation failed. Please allow location access.");
+                });
+            } else {
+                alert("Geolocation is not supported by this browser.");
+            }
+        });
+    </script>
 </body>
 </html>
 {% endblock %}

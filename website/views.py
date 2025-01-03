@@ -225,30 +225,63 @@ def educational_resources():
 
 
 def live_map():
-    default_location = [23.7725, 90.4253]  # Default location (your location or any default place)
+    # BRAC University coordinates (fallback location)
+    brac_location = [23.7725, 90.4253]  # Coordinates for BRAC University
     zoom_level = 16
-    searched_location = None  
 
-    m = folium.Map(location=default_location, zoom_start=zoom_level, tiles='cartodbdark_matter')
+    # Create the folium map centered at BRAC University by default
+    m = folium.Map(location=brac_location, zoom_start=zoom_level, tiles='cartodbdark_matter')
+
+    # Add the blue marker and circle for BRAC University
+    folium.CircleMarker(
+        location=brac_location,
+        radius=10,
+        color="blue",
+        fill=True,
+        fill_color="blue",
+        fill_opacity=0.6,
+        popup="BRAC University"
+    ).add_to(m)
+    folium.Marker(brac_location, popup="BRAC University").add_to(m)
 
     if request.method == 'POST':
-        # Check if the button to center on the user location is pressed
         if 'center_on_user' in request.form:
-            # Use geolocation API or any other method to get the user's current location
-            geolocator = Nominatim(user_agent="crime_map")
-            location = geolocator.geocode("Your IP or geolocation lookup")  # For example, use IP or user agent
-            if location:
-                user_location = [location.latitude, location.longitude]
-                m = folium.Map(location=user_location, zoom_start=zoom_level, tiles='cartodbdark_matter')
-                folium.Marker(
-                    user_location,
-                    popup="Your Location",
-                    tooltip="Current Location"
-                ).add_to(m)
-            else:
-                flash('Could not fetch your current location. Please try again.', category='error')
+            # Get user location from JavaScript (sent via POST request)
+            user_lat = request.form.get('latitude')
+            user_lng = request.form.get('longitude')
 
-    map_html = m._repr_html_()  # Convert map to HTML
+            # If the user location is provided, center the map on it
+            if user_lat and user_lng:
+                user_location = [float(user_lat), float(user_lng)]
+                m = folium.Map(location=user_location, zoom_start=zoom_level, tiles='cartodbdark_matter')
+
+                # Add the blue marker and circle for the user's location
+                folium.CircleMarker(
+                    location=user_location,
+                    radius=10,
+                    color="blue",
+                    fill=True,
+                    fill_color="blue",
+                    fill_opacity=0.6,
+                    popup="Your Location"
+                ).add_to(m)
+                folium.Marker(user_location, popup="Your Location").add_to(m)
+            else:
+                # If geolocation failed or no user location is available, center map on BRAC University
+                m = folium.Map(location=brac_location, zoom_start=zoom_level, tiles='cartodbdark_matter')
+                folium.CircleMarker(
+                    location=brac_location,
+                    radius=10,
+                    color="blue",
+                    fill=True,
+                    fill_color="blue",
+                    fill_opacity=0.6,
+                    popup="BRAC University"
+                ).add_to(m)
+                folium.Marker(brac_location, popup="BRAC University").add_to(m)
+
+    # Render the map as HTML to be injected into the template
+    map_html = m._repr_html_()
     return render_template('live_map.html', map_html=map_html, user=current_user)
 
 
