@@ -167,18 +167,18 @@
 
     <script>
         // Get data from Python
-        const locations = {{ locations | tojson }};
-        const counts = {{ counts | tojson }};
+        const locations1 = {{ locations | tojson }};
+        const counts1 = {{ counts | tojson }};
 
         // Create the chart
         const ctx = document.getElementById('crimeChart').getContext('2d');
         new Chart(ctx, {
             type: 'bar',
             data: {
-                labels: locations,
+                labels: locations1,
                 datasets: [{
                     label: 'Number of Crimes',
-                    data: counts,
+                    data: counts1,
                     backgroundColor: 'rgba(255, 0, 0, 0.5)',
                     borderColor: 'rgba(255, 0, 0, 1)',
                     borderWidth: 1

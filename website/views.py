@@ -15,14 +15,25 @@ import folium
 import requests
 import folium
 from geopy.geocoders import Nominatim
-from folium.plugins import MarkerCluster
+from folium.plugins import MarkerCluster, HeatMap
 from .models import Crime, User
-
+import random
 views = Blueprint('views', __name__)
+
+response= None
+# BRAC University coordinates (fallback location)
+brac_location = [23.7725, 90.4253]
+default_location= brac_location  # Coordinates for BRAC University
+zoom_level = 16
+searched_location = None 
+# Create the folium map centered at BRAC University by default
+m = folium.Map(location=default_location, zoom_start=zoom_level, tiles='cartodbdark_matter')
+crime_locations= []
 
 @views.route('/', methods=['GET', 'POST'])
 @login_required
 def home():
+    global crime_locations
     if request.method == 'POST':
         text = request.form['text']
 
@@ -34,11 +45,30 @@ def home():
         return redirect(url_for('views.home'))
 
     # Fetch all chat messages
+   
     chats = Chat.query.all()
     crimes = Crime.query.all()
     categories = Category.query.all()
     for crime in crimes:
         crime.user = User.query.get(crime.user_id)
+        if crime.location not in crime_locations:
+            crime_locations.append(crime.location)
+    for crime_location in crime_locations:
+        if crime_location:  
+           geolocator = Nominatim(user_agent="crime_map")
+           location = geolocator.geocode(crime_location)  
+           if location:
+               searched_location = [location.latitude, location.longitude]     
+               folium.CircleMarker(
+                   location=searched_location,
+                   radius=random.randint(10,100),
+                   color="red",
+                   fill=True,
+                   fill_color="red",
+                   fill_opacity=0.6,
+                   popup= f'{location}'
+               ).add_to(m)
+
     return render_template("home.html", user=current_user, crimes=crimes, categories=categories, chats=chats)
 
 @views.route('/clear_chats', methods=['POST'])
@@ -138,23 +168,6 @@ def delete_crime(crime_id):
 
 #----------------------------------------------------------------------------------------------
 
-
-@views.route('/submit_crime', methods=['POST'])
-def submit_crime():
-    title = request.form.get('title')
-    description = request.form.get('description')
-    location = request.form.get('location')
-    date = request.form.get('date')
-    
-
-    if title and description and location and date:
-        new_crime = Crime(title=title, description=description, location=location, date=date, user_id=current_user.id)
-        db.session.add(new_crime)
-        db.session.commit()
-        return redirect(url_for('views.law_enforcement'))
-    else:
-        return redirect(url_for('views.law_enforcement', error='Please fill in all fields'))
-
 @views.route('/report_crime', methods=['GET', 'POST'])
 @login_required
 def report_crime():
@@ -187,6 +200,8 @@ def report_crime():
                 flash('Crime posted and category updated!', category='success')
             else:
                 flash('Invalid category selected!', category='error')
+    
+    
     return render_template("report_crime.html", user=current_user, crimes=crimes, categories=categories)
 
 @views.route('/law_enforcement', methods=['GET', 'POST'])
@@ -219,19 +234,15 @@ def public_awareness():
 def educational_resources():
     return render_template('educational_resources.html', user=current_user)
 
-@views.route('/live-map', methods=['GET', 'POST'])
+@views.route('/live-map', methods=['GET', 'POST', "center_on_user"])
 @login_required
 
 
 
 def live_map():
-    # BRAC University coordinates (fallback location)
-    brac_location = [23.7725, 90.4253]  # Coordinates for BRAC University
-    zoom_level = 16
-
-    # Create the folium map centered at BRAC University by default
-    m = folium.Map(location=brac_location, zoom_start=zoom_level, tiles='cartodbdark_matter')
-
+    global response, brac_location,default_location,zoom_level,searched_location,m
+    response= None
+    m.location= brac_location
     # Add the blue marker and circle for BRAC University
     folium.CircleMarker(
         location=brac_location,
@@ -242,19 +253,33 @@ def live_map():
         fill_opacity=0.6,
         popup="BRAC University"
     ).add_to(m)
-    folium.Marker(brac_location, popup="BRAC University").add_to(m)
-
     if request.method == 'POST':
-        if 'center_on_user' in request.form:
-            # Get user location from JavaScript (sent via POST request)
-            user_lat = request.form.get('latitude')
-            user_lng = request.form.get('longitude')
+        search_query = request.form.get('location')
 
+        if search_query:
+            geolocator = Nominatim(user_agent="crime_map")
+            location = geolocator.geocode(search_query) 
+            if location:
+                searched_location = [location.latitude, location.longitude]
+        
+                folium.Marker(
+                    [location.latitude, location.longitude],
+                    popup= location.address,
+                    tooltip="Searched Location",
+                    icon=folium.Icon(color="red")
+                ).add_to(m)
+            m.location = searched_location
+            
+    elif request.method =='center_on_user':
+        clear_markers()
+        response = requests.get("https://ipinfo.io/json")
+        if response and response.status_code == 200:
+            data = response.json()
+            location = data.get("loc", "")           
             # If the user location is provided, center the map on it
-            if user_lat and user_lng:
-                user_location = [float(user_lat), float(user_lng)]
-                m = folium.Map(location=user_location, zoom_start=zoom_level, tiles='cartodbdark_matter')
-
+            if location:
+                latitude, longitude = map(float, location.split(","))
+                user_location= [float(latitude), float(longitude)]
                 # Add the blue marker and circle for the user's location
                 folium.CircleMarker(
                     location=user_location,
@@ -265,10 +290,10 @@ def live_map():
                     fill_opacity=0.6,
                     popup="Your Location"
                 ).add_to(m)
-                folium.Marker(user_location, popup="Your Location").add_to(m)
+                folium.Marker(user_location, popup="Your Location", icon=folium.Icon(color="red")).add_to(m)
+                m.location = user_location
             else:
                 # If geolocation failed or no user location is available, center map on BRAC University
-                m = folium.Map(location=brac_location, zoom_start=zoom_level, tiles='cartodbdark_matter')
                 folium.CircleMarker(
                     location=brac_location,
                     radius=10,
@@ -278,23 +303,15 @@ def live_map():
                     fill_opacity=0.6,
                     popup="BRAC University"
                 ).add_to(m)
-                folium.Marker(brac_location, popup="BRAC University").add_to(m)
-
-    # Render the map as HTML to be injected into the template
+                folium.Marker(brac_location, popup="BRAC University", icon=folium.Icon(color="red")).add_to(m)
+                m.location = brac_location
+ 
     map_html = m._repr_html_()
     return render_template('live_map.html', map_html=map_html, user=current_user)
 
-
-# Function to get the user location based on their IP
-def get_user_location():
-    try:
-        # You can use the IPInfo API to get the user's location based on their IP address
-        ip_info = requests.get('https://ipinfo.io/json').json()
-        loc = ip_info['loc'].split(',')  # loc returns a string like "lat,long"
-        lat = float(loc[0])
-        lon = float(loc[1])
-        return [lat, lon]
-    except Exception as e:
-        print("Error in getting user location:", e)
-        return [23.8103, 90.4125]  # Default to Dhaka if location cannot be fetched
+def clear_markers():
+    brac_location = [23.7725, 90.4253]
+    default_location= brac_location  # Coordinates for BRAC University
+    zoom_level = 16
+    m = folium.Map(location=default_location, zoom_start=zoom_level, tiles='cartodbdark_matter')
 
