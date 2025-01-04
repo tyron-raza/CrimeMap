@@ -6,12 +6,9 @@ from datetime import datetime
 from collections import defaultdict
 from collections import Counter
 from datetime import datetime
-from geopy.geocoders import Nominatim
-import folium
 import requests
 import folium
 from geopy.geocoders import Nominatim
-from .models import Crime, User
 import random
 
 views = Blueprint('views', __name__)
@@ -36,14 +33,11 @@ def home():
     if request.method == 'POST':
         text = request.form['text']
 
-        # Add the new chat message to the database
         new_message = Chat(user_id=current_user.id, text=text)
         db.session.add(new_message)
         db.session.commit()
 
         return redirect(url_for('views.home'))
-
-    # Fetch all chat messages
    
     chats = Chat.query.all()
     crimes = Crime.query.all()
@@ -72,10 +66,10 @@ def home():
 
 @views.route('/clear_chats', methods=['POST'])
 def clear_chats():
-    if current_user.id == 1:  # Ensure the user is the admin (or any role you prefer)
-        Chat.query.delete()  # This deletes all records in the Chat table
-        db.session.commit()  # Commit the changes to the database
-    return redirect(url_for('views.home'))  # Redirect back to the home page
+    if current_user.id == 1:  
+        Chat.query.delete() 
+        db.session.commit() 
+    return redirect(url_for('views.home')) 
 
 
 @views.route('/admin-tools', methods=['GET', 'POST'])
@@ -152,7 +146,7 @@ def stats():
 @views.route('/delete-crime/<int:crime_id>', methods=['POST'])
 @login_required
 def delete_crime(crime_id):
-    if current_user.id != 1:  # Restrict access to admin
+    if current_user.id != 1:  
         flash('Access denied!', category='error')
         return redirect(url_for('views.home'))
 
@@ -163,7 +157,7 @@ def delete_crime(crime_id):
         flash('Crime deleted successfully!', category='success')
     else:
         flash('Crime not found.', category='error')
-    return redirect(url_for('views.admin_tools'))  # Redirect back to admin tools page
+    return redirect(url_for('views.admin_tools'))  
 
 #----------------------------------------------------------------------------------------------
 
@@ -235,9 +229,6 @@ def educational_resources():
 
 @views.route('/live-map', methods=['GET', 'POST', "center_on_user"])
 @login_required
-
-
-
 def live_map():
     global response, brac_location,default_location,zoom_level,searched_location,m
     response= None
