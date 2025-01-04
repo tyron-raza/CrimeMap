@@ -135,6 +135,36 @@
             font-size: 12px;
 
         }
+            .modal {
+              position: fixed;
+              z-index: 1000;
+              left: 0;
+              top: 0;
+              width: 100%;
+              height: 100%;
+              background-color: rgb(0, 0, 0);
+              display: flex;
+              justify-content: center;
+              align-items: center;
+            }
+            .modal-content {
+              border-radius: 2px;
+              border-color: #c00 ;
+              position: relative;
+              padding: 20px;
+              background-color: #000;
+              max-width: 900px;
+              width: 90%;
+            }
+            .close {
+              position: absolute;
+              top: 10px;
+              right: 20px;
+              color: #ff4d4d;
+              font-size: 24px;
+              cursor: pointer;
+            }
+          
     </style>
 </head>
 <body>
@@ -158,29 +188,59 @@
     
     <ul class="container">
       {% for crime in crimes %}
-      <div class="container bg-black text-danger p-4 mb-3" style="border: 2px solid red; border-radius: 15px;">
-        <div class="d-flex justify-content-between align-items-center">
-            <!-- Title -->
+
+        <div
+          class="container bg-black text-danger p-4 mb-3"
+          style="border: 2px solid red; border-radius: 15px; cursor: pointer;"
+          onclick="openModal('{{ crime.id }}', '{{ crime.title }}', '{{ crime.location }}', '{{ crime.data }}', '{{ crime.date.strftime('%Y-%m-%d %H:%M:%S') }}', '{{ crime.user.first_name }}')"
+        >
+          <div class="d-flex justify-content-between align-items-center">
             <h3 class="fw-bold text-danger mb-0">{{ crime.title }}</h3>
-            <!-- Location -->
             <span class="text-danger">{{ crime.location }}</span>
-        </div>
-        <hr class="border-danger my-2">
-        <!-- Description -->
-        <p class="text-danger mb-1">{{ crime.data }}</p>
-        <!-- Date and User -->
-        <small class="text-danger">
-            <strong>Date:</strong> {{ crime.date.strftime('%Y-%m-%d %H:%M:%S') }} | 
+          </div>
+          <small class="text-danger">
+            <strong>Date:</strong> {{ crime.date.strftime('%Y-%m-%d %H:%M:%S') }} |
             <strong>Posted by:</strong> {{ crime.user.first_name }}
-        </small>
+          </small>
+        </div>
+
+        <!-- Modal -->
+        <div id="crimeModal" class="modal" style="display: none;">
+          <div class="modal-content bg-black text-danger p-4" style="border-radius: 15px;">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h3 id="modalTitle" class="fw-bold"></h3>
+            <p><strong>Location: </strong><span id="modalLocation"></span></p> <br>
+            <p><strong>Description:</strong> <br><br><span id="modalDescription"></span></p> <br><br>
+            <p><strong>Date:</strong><br> <span id="modalDate"></span></p>
+            <p><strong>Posted by:</strong> <span id="modalUser"></span></p>
+          </div>
+        </div>
+
+        <script>
+          function openModal(id, title, location, description, date, user) {
+            // Populate modal content
+            document.getElementById("modalTitle").textContent = title;
+            document.getElementById("modalLocation").textContent = location;
+            document.getElementById("modalDescription").textContent = description;
+            document.getElementById("modalDate").textContent = date;
+            document.getElementById("modalUser").textContent = user;
         
-    </div>
-    
-    
+            // Display the modal
+            document.getElementById("crimeModal").style.display = "flex";
+          }
+      
+          function closeModal() {
+            // Hide the modal
+            document.getElementById("crimeModal").style.display = "none";
+          }
+        </script>
+
+
+
       {% endfor %}
     </ul>
-    <div style="position: absolute; left: 1%; right: 1%; top: 100px; width: 350px; height: 800px; border: 1px solid #ff0000; padding: 10px;">
-        <h3 class="fw-bold text-danger mb-4" style="text-align: center; margin: 0; font-size: 20px;">Chat</h3>
+    <div style="position: absolute; left: 1%; right: 1%; top: 100px; width: 350px; height: 800px; border: 1px solid #ff0000; padding: 10px; background: #000;">
+        <h3 class="fw-bold text-danger mb-4" style="text-align: center; margin: 0; font-size: 20px;">Chat Box</h3>
         <div style="max-height: calc(100% - 60px); overflow-y: scroll; padding-right: 5px;" class="chat-container">
             {% for chat in chats %}
                 <div class="container bg-black text-danger" style="margin-bottom: 15px; font-size: 12px;">

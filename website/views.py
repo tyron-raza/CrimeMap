@@ -1,39 +1,38 @@
-from flask import Blueprint, render_template, request, flash, jsonify, redirect, url_for
+from flask import Blueprint, render_template, request, flash, redirect, url_for
 from flask_login import login_required, current_user
-from .models import Crime, User, Category, Location, Chat
+from .models import Crime, User, Category, Chat
 from . import db
 from datetime import datetime
 from collections import defaultdict
 from collections import Counter
-from flask import redirect, url_for
-import json
 from datetime import datetime
-from flask import session
-from flask import render_template, request, flash
 from geopy.geocoders import Nominatim
 import folium
 import requests
 import folium
 from geopy.geocoders import Nominatim
-from folium.plugins import MarkerCluster, HeatMap
 from .models import Crime, User
 import random
+
 views = Blueprint('views', __name__)
 
+
+
+
 response= None
-# BRAC University coordinates (fallback location)
 brac_location = [23.7725, 90.4253]
-default_location= brac_location  # Coordinates for BRAC University
+default_location= brac_location  
 zoom_level = 16
 searched_location = None 
-# Create the folium map centered at BRAC University by default
 m = folium.Map(location=default_location, zoom_start=zoom_level, tiles='cartodbdark_matter')
 crime_locations= []
 
 @views.route('/', methods=['GET', 'POST'])
 @login_required
 def home():
-    global crime_locations
+    clear_markers()
+    global crime_locations, m
+    m = folium.Map(location=default_location, zoom_start=zoom_level, tiles='cartodbdark_matter')
     if request.method == 'POST':
         text = request.form['text']
 
@@ -61,12 +60,12 @@ def home():
                searched_location = [location.latitude, location.longitude]     
                folium.CircleMarker(
                    location=searched_location,
-                   radius=random.randint(10,100),
+                   radius=random.randint(10,50),
                    color="red",
                    fill=True,
                    fill_color="red",
-                   fill_opacity=0.6,
-                   popup= f'{location}'
+                   fill_opacity=0.2,
+                   popup= f'{crime_location}'
                ).add_to(m)
 
     return render_template("home.html", user=current_user, crimes=crimes, categories=categories, chats=chats)
