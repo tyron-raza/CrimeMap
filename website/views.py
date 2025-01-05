@@ -19,7 +19,7 @@ views = Blueprint('views', __name__)
 response= None
 brac_location = [23.7725, 90.4253]
 default_location= brac_location  
-zoom_level = 16
+zoom_level = 14
 searched_location = None 
 m = folium.Map(location=default_location, zoom_start=zoom_level, tiles='cartodbdark_matter')
 crime_locations= []
