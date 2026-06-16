@@ -6,3 +6,4 @@ flask-sqlalchemy
 flask-wtf
 email-validator
 python-dotenv
+folium
