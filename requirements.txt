@@ -1,4 +1,8 @@
-Flask==3.1.0
-Flask-Login==0.6.3
-Flask-SQLAlchemy==3.1.1
+Flask
 gunicorn
+requests
+flask-login
+flask-sqlalchemy
+flask-wtf
+email-validator
+python-dotenv
