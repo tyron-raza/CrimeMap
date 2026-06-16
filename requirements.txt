@@ -7,3 +7,4 @@ flask-wtf
 email-validator
 python-dotenv
 folium
+geopy
